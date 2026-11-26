@@ -1,0 +1,31 @@
+
+name: Build Archipel Englouti for NumWorks
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install ARM toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi binutils-arm-none-eabi make nodejs npm
+
+      - name: Build NWA
+        run: |
+          make clean
+          make build
+          test -s output/Archipel_Englouti.nwa
+
+      - name: Upload application
+        uses: actions/upload-artifact@v4
+        with:
+          name: Archipel-Englouti-NWA
+          path: output/Archipel_Englouti.nwa
