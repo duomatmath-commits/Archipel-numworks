@@ -16,16 +16,22 @@ jobs:
       - name: Install ARM toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi binutils-arm-none-eabi make nodejs npm
+          sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi binutils-arm-none-eabi make nodejs npm unzip
+
+      - name: Extract game files
+        run: |
+          unzip -q Archipel_Englouti_NumWorks_V6_compilation_en_ligne.zip -d source
+          ls source/archipel_numworks
 
       - name: Build NWA
         run: |
-          make clean
-          make build
-          test -s output/Archipel_Englouti.nwa
+          make -C source/archipel_numworks clean
+          make -C source/archipel_numworks build
+          test -s source/archipel_numworks/output/Archipel_Englouti.nwa
 
       - name: Upload application
         uses: actions/upload-artifact@v4
         with:
           name: Archipel-Englouti-NWA
-          path: output/Archipel_Englouti.nwa
+          path: source/archipel_numworks/output/Archipel_Englouti.nwa
+
